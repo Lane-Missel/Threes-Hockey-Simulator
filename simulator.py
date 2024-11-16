@@ -5,7 +5,9 @@ Created: November 13, 2024
 Contains the 3 on 3 hockey simulator/engine.
 """
 
+from player import Skater
 from team import Team
+import utility
 
 class Simulator:
     def __init__(self, config: dict):
@@ -16,7 +18,11 @@ class Simulator:
         self.teams = [None, None]
         self.score = None
         self.time_remaining = None
-        self.zone = None
+        self.zone = None # 0,1, 2with 0 representing the goal which is being attacked.
+        self.possession = None
+        self.attacking: Team = None
+        self.defending: Team = None
+        self.puck_carrier: Skater = None
         
         # default valus for simulator.
         self.config = {
@@ -85,23 +91,54 @@ class Simulator:
         """
         shift_start = self.time_remaining
         
-        # get_team_lines
-        line0 = self.teams[0].get_line(self.lead(0), self.zone)
-        line1 = self.teams[1].get_line(self.lead(1), self.config["num_zones"] - self.zone)
+        # set team lines
+        self.teams[0].set_line(self.lead(0), self.zone)
+        self.teams[1].set_line(self.lead(1), self.config["num_zones"] - self.zone)
 
-        faceoff0 = line0.get_faceoff()
-        faceoff1 = line1.get_faceoff()
+        # get players taking faceoff.
+        faceoff0: Skater = self.teams[0].get_faceoff()
+        faceoff1: Skater = self.teams[1].get_faceoff()
+
+        # decide attacking team.
+        self.possession = utility.faceoff(faceoff0, faceoff1)
+
+        # reassign teams
+        self.attacking = self.teams[self.possession]
+        self.defending = self.teams[not self.possession]
+
+        # update faceoff stats
+        winner = faceoff0 if not self.possession else faceoff1
+        winner.faceoff_wins += 1
+
+        for faceoff in [faceoff0, faceoff1]:
+            faceoff.faceoffs_taken += 1
+
+        # give puck to one of the other teammates.
+        self.puck_carrier = None
+
+        # simulate possessions during shift...
+        ongoing = True
+        while ongoing and self.time_remaining > 0:
+            ongoing = self.simulate_possession(overtime)
 
 
-        while self.time_remaining > 0:
-            self.simulate_possession(overtime)
-
-
-    def simulate_possession(self, overtime = False):
+    def simulate_possession(self, overtime = False) -> bool:
         """
         Simulates one possession within the simulator.
         """
-        pass
+        ### attacking team must attempt to move up unless in attacking zone
+        if self.zone > 0:
+            # use mutlitue of difference to determine what to do.
+            defense = self.defending.zone_defense()
+            offense = self.attacking.zone_offense()
+
+            # can try to stay in zone, skate it up, or pass it up.
+            stay = utility.ratio(self.)
+            
+
+
+        # team will attempt to score
+
 
 
     def simulate_tick(self, overtime = False):

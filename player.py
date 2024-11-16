@@ -15,13 +15,15 @@ class Player:
 
 
 class Skater(Player):
-    def __init__(self, first, last, number, position, offensive_awareness, defensive_awareness, shooting, passing, control, skating, checking, blocking):
+    def __init__(self, first, last, number, position, offense, defense, shooting, passing, control, skating, checking, blocking):
         super().__init__(first, last, number, position)
-        self.offensive_awareness = offensive_awareness # abiity to make good offensive decisions
-        self.defensive_awareness = defensive_awareness # make good defensive decisions
+        self.offense = offense # abiity to make good offensive decisions
+        self.defense = defense # make good defensive decisions
         self.shooting = shooting # ability to score
         self.passing = passing # pass and pass receive
         self.control = control # keep puck away from opponenent
         self.skating = skating # get and stay open
         self.checking = checking # gain possession from opposition
         self.blocking = blocking # block an opponenents shot
+        self.faceoffs_taken = 0
+        self.faceoffs_wins = 0
