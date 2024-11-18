@@ -1,44 +1,31 @@
 """
 Author: Lane Missel
-Created: November 13, 2024
+Created: November 18, 2024
 
-Contains the class Team for use in the Simulator class.
+File contains Team class.
 """
 
-from random import random
+import player
 
 class Team:
-    def __init__(self, skaters, goaltenders):
-        self.bench = skaters
-        self.goaltenders = goaltenders
-        self.active = None
+    def __init__(self):
+        self.skaters = []
+        self.goaltenders = []
 
 
-    def zone_defense(self):
-        """
-        Returns scaled random value for zone defense.
-        """
-        self._uniform_stat(sum(x.skating + x.defense for x in self.active))
+    def add_skater(self, skater):
+        assert(isinstance(skater, player.Skater))
+        self.skaters.append(skater)
 
 
-    def zone_offense(self):
-        """
-        Returns scaled random value for zone offense.
-        """
-        self._uniform_stat(sum(x.skating + x.offense for x in self.active))
-        
+    def add_goaltender(self, goaltender):
+        assert(isinstance(goaltender, player.Goaltender))
+        self.goaltenders.append(goaltender)
 
 
-    def set_line(self, lead: int, zone: int):
-        """
-        Returns the line for the next shift.
-        """
-        # depending on lead, and location, put out best players for next shift.
-        last = self.active
-        self.active = self.bench[0:2]
-        self.bench += last
+    def get_line(self):
+        skaters = []
+        for _ in range(3):
+            skaters.append(self.skaters.pop(0))
+        return skaters
 
-
-    def _uniform_stat(self, values):
-        half = values / 2
-        return half + half * random()
