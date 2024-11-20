@@ -61,6 +61,10 @@ class SkaterStatistics:
         # defense
         self.shot_blocks = 0
 
+        # faceoffs
+        self.faceoffs_taken = 0
+        self.faceoffs_won = 0
+
 
 class GoaltenderStatistics:
     """
@@ -116,6 +120,26 @@ class Skater(Player):
     def __init__(self, skills = None):
         assert(isinstance(skills, SkaterSkills))
         super().__init__(skills, SkaterStatistics())
+
+    
+    def faceoff_result(self, result):
+        self.statistics.faceoffs_taken += 1
+        self.statistics.faceoffs_won += result
+
+
+    def move(self, has_possession, puck_zone, zone):
+        """
+        Returns players new zone given state.
+        """
+        pass
+
+    
+    def action(self):
+        """
+        Player takes action with the puck.
+        """
+        pass
+
 
 
 # Skater subtypes
